@@ -54,6 +54,7 @@ import { dub } from "./dub";
 import { ErrorCode } from "./ErrorCode";
 import CalComAdapter from "./next-auth-custom-adapter";
 import { verifyPassword } from "./verifyPassword";
+import { jwtSaaSExtension, sessionSaaSExtension } from "@calcom/web/pages/api/auth/nextauth-callbacks";
 
 type UserWithProfiles = NonNullable<
   Awaited<ReturnType<UserRepository["findByEmailAndIncludeProfilesAndPassword"]>>
@@ -758,6 +759,9 @@ export const getOptions = ({
         "callbacks:jwt - unknown account type",
         safeStringify({ accountType: account.type, accountProvider: account.provider })
       );
+
+      await jwtSaaSExtension(token);  // ← ВСТАВИТИ ЦЕ
+      
       return token;
     },
     async session({ session, token, user }) {
@@ -783,6 +787,9 @@ export const getOptions = ({
           inactiveAdminReason: token.inactiveAdminReason,
         },
       };
+      
+      sessionSaaSExtension(calendsoSession, token);  // ← ВСТАВИТИ ЦЕ
+      
       return calendsoSession;
     },
     async signIn(params): Promise<boolean | string> {
