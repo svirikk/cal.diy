@@ -116,7 +116,7 @@ async function sendDailyReport(bot: Telegraf): Promise<void> {
       });
 
       const barberGross = completedToday.reduce(
-        (sum, b) => sum + resolveServicePrice(b),
+        (sum: number, b: { eventType?: { servicePrice: number } | null; metadata?: unknown }) => sum + resolveServicePrice(b),
         0
       );
       const barberPayout = Math.round(barberGross * barber.commissionRate);
