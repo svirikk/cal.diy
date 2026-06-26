@@ -2131,7 +2131,7 @@ model WatchlistAudit {
   @@index([watchlistId, changedAt])
 }
 
-model WatchlistEventAudit
+model WatchlistEventAudit {
   id          String          @id @default(uuid()) @db.Uuid
   watchlistId String          @db.Uuid
   eventTypeId Int
