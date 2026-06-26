@@ -111,7 +111,7 @@ export function registerBarberStatsHandler(bot: Telegraf): void {
 
     // Підраховуємо фінанси
     const monthGross = monthCompleted.reduce(
-      (sum, b) => sum + resolveServicePrice(b),
+      (sum: number, b: { eventType?: { servicePrice: number } | null; metadata?: unknown }) => sum + resolveServicePrice(b),
       0
     );
     const monthEarnings = Math.round(monthGross * barber.commissionRate);
