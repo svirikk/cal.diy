@@ -2115,7 +2115,7 @@ model Watchlist {
 }
 
 model WatchlistAudit {
-  id          String        @id @default(uuid(7)) @db.Uuid
+  id          String        @id @default(uuid()) @db.Uuid
   type        WatchlistType
   value       String
   description String?
@@ -2131,8 +2131,8 @@ model WatchlistAudit {
   @@index([watchlistId, changedAt])
 }
 
-model WatchlistEventAudit {
-  id          String          @id @default(uuid(7)) @db.Uuid
+model WatchlistEventAudit
+  id          String          @id @default(uuid()) @db.Uuid
   watchlistId String          @db.Uuid
   eventTypeId Int
   actionTaken WatchlistAction
@@ -2464,7 +2464,7 @@ enum AuditActorType {
 }
 
 model AuditActor {
-  id   String         @id @default(uuid(7)) @db.Uuid
+  id   String         @id @default(uuid()) @db.Uuid
   type AuditActorType
 
   // References for different actor types (soft references, no FK constraints)
@@ -2502,7 +2502,7 @@ model AuditActor {
 }
 
 model BookingAudit {
-  id         String @id @default(uuid(7)) @db.Uuid
+  id         String @id @default(uuid()) @db.Uuid
   // bookingUid is stored as a plain string (not a foreign key relation) to preserve the audit trail
   // even after the booking is deleted. This is intentional for audit log integrity:
   // - Audit logs are immutable historical records that should persist independently
