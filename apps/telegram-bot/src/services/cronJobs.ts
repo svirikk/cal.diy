@@ -212,7 +212,7 @@ async function autoBlockExpiredSubscriptions(bot: Telegraf): Promise<void> {
   if (expiredOwners.length === 0) return;
 
   await prisma.user.updateMany({
-    expiredOwners.map(function(o) { return o.id; })
+    where: { id: { in: expiredOwners.map(function(o) { return o.id; }) } },
     data: { subscriptionActive: false },
   });
 
