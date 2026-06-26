@@ -16,29 +16,6 @@ generator client {
   importFileExtension = ""
 }
 
-generator zod {
-  provider                 = "zod-prisma-types"
-  output                   = "./zod"
-  useMultipleFiles         = true
-  createInputTypes         = false
-  addIncludeType           = false
-  addSelectType            = false
-  validateWhereUniqueInput = false
-  prismaClientPath         = "../../generated/prisma/client"
-  moduleFormat             = "cjs"
-  /// createRelationValuesTypes = true
-}
-
-generator kysely {
-  provider = "prisma-kysely"
-  output   = "../kysely"
-  fileName = "types.ts"
-}
-
-generator enums {
-  provider = "prisma-enum-generator"
-}
-
 enum SchedulingType {
   ROUND_ROBIN @map("roundRobin")
   COLLECTIVE  @map("collective")
