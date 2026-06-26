@@ -3,6 +3,7 @@ import { getCspHeader, getCspNonce } from "@lib/csp";
 import { get } from "@vercel/edge-config";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 const safeGet = async <T = any>(key: string): Promise<T | undefined> => {
   try {
@@ -67,6 +68,17 @@ const shouldEnforceCsp = (url: URL) => {
 
 const proxy = async (req: NextRequest): Promise<NextResponse<unknown>> => {
   const url = req.nextUrl;
+    // ── SaaS Barbershop: блокування дешборду при простроченій підписці ──────────
+  const PROTECTED = ["/event-types", "/bookings", "/availability", "/settings", "/apps", "/workflows", "/insights", "/teams"];
+  const isProtected = PROTECTED.some((p) => url.pathname.startsWith(p));
+
+  if (isProtected) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET ?? "" });
+    if (token && token.subscriptionBlocked === true) {
+      return NextResponse.redirect(new URL("/subscription-expired", req.url));
+    }
+  }
+  // ── кінець блоку SaaS ──────
   const reqWithEnrichedHeaders = enrichRequestWithHeaders({ req });
   const requestHeaders = new Headers(reqWithEnrichedHeaders.headers);
 
@@ -163,7 +175,17 @@ function enrichRequestWithHeaders({ req }: { req: NextRequest }) {
 }
 
 export const config = {
-  matcher: ["/auth/login", "/login", "/apps/installed", "/auth/logout", "/:path*/embed", "/availability", "/api/auth/signup"],
+  matcher: [
+    "/auth/login", "/login", "/apps/installed", "/auth/logout",
+    "/:path*/embed", "/availability", "/api/auth/signup",
+    // SaaS Barbershop — захищені маршрути дешборду
+    "/event-types/:path*",
+    "/bookings/:path*",
+    "/settings/:path*",
+    "/workflows/:path*",
+    "/insights/:path*",
+    "/teams/:path*",
+  ],
 };
 
 export default proxy;
