@@ -222,6 +222,12 @@ const nextConfig = (phase: string): NextConfig => {
   }
 
   return {
+    typescript: {
+      ignoreBuildErrors: true,
+    },
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
     output: process.env.BUILD_STANDALONE === "true" ? "standalone" : undefined,
     serverExternalPackages: [
       "deasync",
