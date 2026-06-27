@@ -8,12 +8,7 @@ datasource db {
 }
 
 generator client {
-  provider            = "prisma-client-js"
-  previewFeatures     = ["views"]
-  output              = "./generated/prisma"
-  engineType          = "client"
-  moduleFormat        = "cjs"
-  importFileExtension = ""
+  provider = "prisma-client-js"
 }
 
 enum SchedulingType {
