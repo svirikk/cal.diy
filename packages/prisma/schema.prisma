@@ -291,6 +291,7 @@ model EventType {
   updatedAt DateTime? @updatedAt
 
   // @@partial_index([instantMeetingScheduleId])
+  servicePrice Int @default(0)
 
   @@unique([userId, slug])
   @@unique([teamId, slug])
@@ -303,7 +304,6 @@ model EventType {
   @@index([parentId])
   @@index([parentId, teamId])
   @@index([restrictionScheduleId])
-  servicePrice         Int         @default(0)
 }
 
 model Credential {
@@ -509,7 +509,17 @@ model User {
   oAuthClients                   OAuthClient[]
   holidaySettings                UserHolidaySettings?
 
-  autoOptInFeatures Boolean @default(false)
+  autoOptInFeatures     Boolean   @default(false)
+  // ── SaaS Barbershop fields ────────────────────────────────────────────────
+  sasRole               UserRole  @default(BARBER)
+  telegramChatId        String?
+  telegramUsername      String?   @unique
+  ownerId               Int?
+  sasOwner              User?     @relation("BarberOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  barbers               User[]    @relation("BarberOwner")
+  commissionRate        Float     @default(0.40)
+  subscriptionActive    Boolean   @default(true)
+  subscriptionExpiresAt DateTime?
 
   @@unique([email])
   @@unique([email, username])
@@ -519,21 +529,10 @@ model User {
   @@index([emailVerified])
   @@index([identityProvider])
   @@index([identityProviderId])
-  @@map(name: "users")
-  // ── SaaS Barbershop fields ────────────────────────────────────────────────
-  sasRole              UserRole    @default(BARBER)
-  telegramChatId       String?
-  telegramUsername     String?     @unique
-  ownerId              Int?
-  sasOwner             User?       @relation("BarberOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-  barbers              User[]      @relation("BarberOwner")
-  commissionRate       Float       @default(0.40)
-  subscriptionActive   Boolean     @default(true)
-  subscriptionExpiresAt DateTime?
-
   @@index([ownerId])
   @@index([telegramUsername])
   @@index([sasRole])
+  @@map(name: "users")
 }
 
 model NotificationsSubscriptions {
@@ -929,6 +928,8 @@ model Booking {
   wrongAssignmentReports WrongAssignmentReport[]
 
   // @@partial_index([reassignById])
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
 
   @@index([eventTypeId])
   @@index([userId])
@@ -942,9 +943,6 @@ model Booking {
   @@index([userId, status, startTime])
   @@index([eventTypeId, status])
   @@index([userId, createdAt])
-  isCompleted          Boolean     @default(false)
-  completedAt          DateTime?
-
   @@index([isCompleted])
 }
 
