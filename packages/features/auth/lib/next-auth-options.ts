@@ -54,7 +54,7 @@ import { dub } from "./dub";
 import { ErrorCode } from "./ErrorCode";
 import CalComAdapter from "./next-auth-custom-adapter";
 import { verifyPassword } from "./verifyPassword";
-import { jwtSaaSExtension, sessionSaaSExtension } from "@calcom/web/pages/api/auth/nextauth-callbacks";
+import { jwtSaaSExtension, sessionSaaSExtension } from "../../../../apps/web/pages/api/auth/nextauth-callbacks";
 
 type UserWithProfiles = NonNullable<
   Awaited<ReturnType<UserRepository["findByEmailAndIncludeProfilesAndPassword"]>>
