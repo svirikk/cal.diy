@@ -54,7 +54,6 @@ import { dub } from "./dub";
 import { ErrorCode } from "./ErrorCode";
 import CalComAdapter from "./next-auth-custom-adapter";
 import { verifyPassword } from "./verifyPassword";
-import { jwtSaaSExtension, sessionSaaSExtension } from "../../../../apps/web/pages/api/auth/nextauth-callbacks";
 
 type UserWithProfiles = NonNullable<
   Awaited<ReturnType<UserRepository["findByEmailAndIncludeProfilesAndPassword"]>>
@@ -760,7 +759,6 @@ export const getOptions = ({
         safeStringify({ accountType: account.type, accountProvider: account.provider })
       );
 
-      await jwtSaaSExtension(token);  // ← ВСТАВИТИ ЦЕ
       
       return token;
     },
@@ -788,7 +786,6 @@ export const getOptions = ({
         },
       };
       
-      sessionSaaSExtension(calendsoSession, token);  // ← ВСТАВИТИ ЦЕ
       
       return calendsoSession;
     },
